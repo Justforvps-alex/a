@@ -16,7 +16,7 @@ download_proxy($url);
 $phone_number=1; 
 $page_number=1;
 $max_pages=100000000;
-$number_of_phones=10; //vvodim post
+$number_of_phones=500; //vvodim post
 $url='';
 $main_url='https://www.avito.ru/nizhniy_tagil/bytovaya_elektronika';
 echo $main_url;
@@ -186,6 +186,29 @@ function find_phone_url($id,$phone_item_only0,$phone_item_only1,$phone_item_only
 	$phoneUrl="https://www.avito.ru/items/phone/".$id_only."?pkey=".$pkey."&vsrc=r";
 	//echo "<br>Вывод из поиска".$phoneUrl."<br>";
 	return $phoneUrl;
+}
+$file="phones.xlsx";
+file_force_download($file);
+function file_force_download($file) {
+  if (file_exists($file)) {
+    // сбрасываем буфер вывода PHP, чтобы избежать переполнения памяти выделенной под скрипт
+    // если этого не сделать файл будет читаться в память полностью!
+    if (ob_get_level()) {
+      ob_end_clean();
+    }
+    // заставляем браузер показать окно сохранения файла
+    header('Content-Description: File Transfer');
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename=' . basename($file));
+    header('Content-Transfer-Encoding: binary');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate');
+    header('Pragma: public');
+    header('Content-Length: ' . filesize($file));
+    // читаем файл и отправляем его пользователю
+    readfile($file);
+    exit;
+  }
 }
 function download_proxy($url)
 {
